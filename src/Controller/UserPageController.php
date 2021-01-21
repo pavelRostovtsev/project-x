@@ -13,6 +13,9 @@ class UserPageController extends AbstractController
 {
     /**
      * @Route("/page/{slug}", name="user_page")
+     * @param User $user
+     * @param Request $request
+     * @return Response
      */
     public function index(User $user, Request $request): Response
     {
