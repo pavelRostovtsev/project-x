@@ -272,7 +272,7 @@ class User implements UserInterface
     public function computeSlug(SluggerInterface $slugger)
     {
         if (!$this->slug || '-' === $this->slug) {
-            $this->slug = Helpers::translit($this->userName).'-'. Helpers::translit($this->surname).'-'.Helpers::translit($this->id);
+            $this->slug = Helpers::translit($this->userName).'-'. Helpers::translit($this->surname).'-'.rand(1,10000);
         }
     }
 
