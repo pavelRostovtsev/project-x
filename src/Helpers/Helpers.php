@@ -24,4 +24,13 @@ class Helpers
         return $s;
     }
 
+    /**
+     * @param $url
+     * @return string
+     */
+    static function getCurrentSlugPersonalArea($url): string
+    {
+        return explode('/', $url)[2];
+    }
+
 }

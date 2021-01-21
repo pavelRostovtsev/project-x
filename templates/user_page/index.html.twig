@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ user.userName}}  page{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-start ml-5">
+        <div class="mr-5">
+            <img src="{{ asset('1.jpg') }}" alt="аватарка" height="200px" width="250px">
+            {% if status %}
+                <p class=""><a href="" class="btn btn-info mt-2"> Изменить профиль</a></p>
+            {% else%}
+                <input name="submit" class="btn btn-success" type="submit" value="добавить в друзья">
+            {% endif %}
+        </div>
+        <div class="mr-5">
+            <h4>{{ page_owner.getUsername }}</h4>
+            <h5>Статус</h5>
+            <p>день рождения:  {{ page_owner.getDOB }}</p>
+            <p>город:  {{ page_owner.getCity }}</p>
+            <p></p>
+        </div>
+    </div>
+{% endblock %}
