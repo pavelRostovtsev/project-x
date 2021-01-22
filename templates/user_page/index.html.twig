@@ -5,19 +5,51 @@
 {% block body %}
     <div class="d-flex justify-content-start ml-5">
         <div class="mr-5">
-            <img src="{{ asset('1.jpg') }}" alt="аватарка" height="200px" width="250px">
-            {% if status %}
-                <p class=""><a href="" class="btn btn-info mt-2"> Изменить профиль</a></p>
-            {% else%}
-                <input name="submit" class="btn btn-success" type="submit" value="добавить в друзья">
-            {% endif %}
+            <div>
+                {% if page_owner.getAvatar != null %}
+                    <img src="{{ asset('uploads/img/'~ page_owner.getAvatar) }}" alt="аватарка" height="200px" width="250px">
+                {% else %}
+                    <img src="{{ asset('1.jpg') }}" alt="аватарка" height="200px" width="250px">
+                {% endif %}
+                {% if status %}
+                    <p class=""><a href="" class="btn btn-info mt-2"> Изменить профиль</a></p>
+                {% else%}
+                    <input name="submit" class="btn btn-success" type="submit" value="добавить в друзья">
+                {% endif %}
+            </div>
         </div>
         <div class="mr-5">
-            <h4>{{ page_owner.getUsername }}</h4>
-            <h5>Статус</h5>
-            <p>день рождения:  {{ page_owner.getDOB }}</p>
-            <p>город:  {{ page_owner.getCity }}</p>
-            <p></p>
+            <div class="info-user">
+                <h4>{{ page_owner.getUsername }}</h4>
+                <h5>Статус</h5>
+                <p>день рождения:  {{ page_owner.getDOB }}</p>
+                <p>город:  {{ page_owner.getCity }}</p>
+                <p></p>
+            </div>
+            <div class="post-user">
+                {{ form(form_post) }}
+            </div>
+            <div class="d-flex justify-content-center">
+                <div>
+                    <h3 class="text-center">Посты</h3>
+                    {% for  post in posts  %}
+                        <div class="border border-dark mt-3" style="width: 400px">
+                            <p class="text-center">{{ post.getText }}</p>
+                            <div class="d-flex justify-content-center">
+                                <div>
+                                    <img class="" src="{{ asset('uploads/img/'~ post.getImg) }}" alt="" width="300">
+                                    {% if status %}
+                                        {{ include('post/_delete_form.html.twig') }}
+                                        <a class="ml-2" href="{{ path('post_edit', { id: post.getId }) }}">Изменить</a>
+                                    {% endif %}
+                                    <p> <a class="ml-2" href="{{ path('post_show', { id: post.getId }) }}">Смотреть</a></p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     </div>
+
 {% endblock %}

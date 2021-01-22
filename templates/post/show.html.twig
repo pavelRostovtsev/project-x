@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Post{% endblock %}
+
+{% block body %}
+        <div class=" mr-5">
+            <h4 class="mr-5">{{ post.text }}</h4>
+            <img class="mr-5" src="{{ asset('uploads/img/'~ post.getImg) }}" alt="" width="400"> <br>
+            <input class=" mr-5" type="submit" value="&#10084;">
+        </div>
+{% endblock %}
