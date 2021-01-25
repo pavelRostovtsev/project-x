@@ -42,7 +42,14 @@
                                         {{ include('post/_delete_form.html.twig') }}
                                         <a class="ml-2" href="{{ path('post_edit', { id: post.getId }) }}">Изменить</a>
                                     {% endif %}
-                                    <p> <a class="ml-2" href="{{ path('post_show', { id: post.getId }) }}">Смотреть</a></p>
+                                    {{ numberLikes }}
+                                    {{ include('post/_like_post_form.html.twig') }}
+                                    {{ include('post/_comment_post.html.twig') }}
+                                    <div>
+                                        {% for comment in post.comments %}
+                                            <p>{{ comment.text }}</p>
+                                        {% endfor %}
+                                    </div>
                                 </div>
                             </div>
                         </div>

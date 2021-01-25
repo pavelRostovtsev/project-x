@@ -1,0 +1,6 @@
+<form enctype="multipart/form-data" method="post" action="{{ path('post_commit', {'id': post.id}) }}"  >
+    <input type="hidden" name="_token" value="{{ csrf_token('post_commit' ~ post.id) }}">
+    <input name="text" class="form-group" type="text"><br>
+{#    <input type="file" name="img" class="form-control-file" >#}
+    <button class="btn btn-primary">Комментировать</button>
+</form>

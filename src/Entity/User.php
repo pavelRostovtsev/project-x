@@ -27,6 +27,7 @@ class User implements UserInterface
         $this->updatedAt = new \DateTime();
         $this->post = new ArrayCollection();
         $this->postComment = new ArrayCollection();
+        $this->likePost = new ArrayCollection();
     }
 
     /**
@@ -116,11 +117,10 @@ class User implements UserInterface
      */
     private $postComment;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
+    /**
+     * @ORM\OneToMany(targetEntity=Likes::class, mappedBy="user")
+     */
+    private $likePost;
     /**
      * @param string $city
      * @return $this
@@ -373,6 +373,36 @@ class User implements UserInterface
             // set the owning side to null (unless already changed)
             if ($postComment->getAuthor() === $this) {
                 $postComment->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Likes[]
+     */
+    public function getLikePost(): Collection
+    {
+        return $this->likePost;
+    }
+
+    public function addLikePost(Likes $likePost): self
+    {
+        if (!$this->likePost->contains($likePost)) {
+            $this->likePost[] = $likePost;
+            $likePost->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLikePost(Likes $likePost): self
+    {
+        if ($this->likePost->removeElement($likePost)) {
+            // set the owning side to null (unless already changed)
+            if ($likePost->getUser() === $this) {
+                $likePost->setUser(null);
             }
         }
 
