@@ -28,6 +28,8 @@ class User implements UserInterface
         $this->post = new ArrayCollection();
         $this->postComment = new ArrayCollection();
         $this->likePost = new ArrayCollection();
+        $this->userOne = new ArrayCollection();
+        $this->userTwo = new ArrayCollection();
     }
 
     /**
@@ -36,6 +38,14 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * @ORM\Column(type="string", length=180)
@@ -121,6 +131,17 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity=Likes::class, mappedBy="user")
      */
     private $likePost;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Friend::class, mappedBy="user")
+     */
+    private $userOne;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Friend::class, mappedBy="user2")
+     */
+    private $userTwo;
+
     /**
      * @param string $city
      * @return $this
@@ -408,4 +429,65 @@ class User implements UserInterface
 
         return $this;
     }
+
+    /**
+     * @return Collection|Friend[]
+     */
+    public function getUserOne(): Collection
+    {
+        return $this->userOne;
+    }
+
+    public function addUserOne(Friend $userOne): self
+    {
+        if (!$this->userOne->contains($userOne)) {
+            $this->userOne[] = $userOne;
+            $userOne->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserOne(Friend $userOne): self
+    {
+        if ($this->userOne->removeElement($userOne)) {
+            // set the owning side to null (unless already changed)
+            if ($userOne->getUser() === $this) {
+                $userOne->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Friend[]
+     */
+    public function getUserTwo(): Collection
+    {
+        return $this->userTwo;
+    }
+
+    public function addUserTwo(Friend $userTwo): self
+    {
+        if (!$this->userTwo->contains($userTwo)) {
+            $this->userTwo[] = $userTwo;
+            $userTwo->setUser2($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserTwo(Friend $userTwo): self
+    {
+        if ($this->userTwo->removeElement($userTwo)) {
+            // set the owning side to null (unless already changed)
+            if ($userTwo->getUser2() === $this) {
+                $userTwo->setUser2(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

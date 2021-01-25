@@ -32,7 +32,7 @@
             {% if user.getUser() != 'anon.' %}
                 <ul class="mt-5">
                     <li class="mt-3"><a class="text-decoration-none" href="{{ path('user_page', { slug: user.getUser().getSlug }) }}">Личный кабинет</a></li>
-{#                    <li class="mt-3"><a class="text-decoration-none" href="{{ path('freends', { slug: user.getUser().getSlug }) }}">Все пользователи</a></li>#}
+                    <li class="mt-3"><a class="text-decoration-none" href="{{ path('friend') }}">Все пользователи</a></li>
 {#                    <li class="mt-3"><a class="text-decoration-none" href="{{ path('personal_area') }}">Мои фото</a></li>#}
                 </ul>
             {% else%}

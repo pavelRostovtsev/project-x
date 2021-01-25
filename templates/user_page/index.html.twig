@@ -14,7 +14,21 @@
                 {% if status %}
                     <p class=""><a href="" class="btn btn-info mt-2"> Изменить профиль</a></p>
                 {% else%}
-                    <input name="submit" class="btn btn-success" type="submit" value="добавить в друзья">
+                    {% if friendStatus == 'anon' %}
+                        {{ form_start(formAddFriend) }}
+                            <input class="btn btn-success" type="submit" value="добавить в друзья">
+                        {{ form_end(formAddFriend) }}
+                    {% elseif friendStatus == 'follower' %}
+                        <p class="bg-info">Вы подписаны</p>
+                        {{ form_start(formDeleteFriend) }}
+                            <input class="btn btn-danger" type="submit" value="отписаться">
+                        {{ form_end(formDeleteFriend) }}
+                    {% elseif friendStatus == 'friend' %}
+                        <p>в друзьях</p>
+                        {{ form_start(formDeleteFriend) }}
+                            <input class="btn btn-danger" type="submit" value="удалить из друзей">
+                        {{ form_end(formDeleteFriend) }}
+                    {% endif %}
                 {% endif %}
             </div>
         </div>
