@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Все пользователи{% endblock %}
+
+{% block body %}
+    {% for follower in followers %}
+        <div class="mt-3 ">
+            <a class="mt-1" href="{{ path('user_page', { slug: follower.user.slug }) }}">{{ follower.user.userName }} {{ follower.user.surname }}</a><br>
+            <a class="mt-1" href="{{ path('user_page', { slug: follower.user.slug }) }}"><img src="{{ asset('uploads/img/' ~ follower.user.avatar) }}" alt="" height="50px" width="70px"></a><br>
+        </div>
+    {% endfor %}
+{% endblock %}

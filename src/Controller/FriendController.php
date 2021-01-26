@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Friend;
 use App\Entity\User;
 use App\Form\FriendAddType;
+use App\Repository\FriendRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,9 +28,15 @@ class FriendController extends AbstractController
 
     /**
      * @Route("/followers", name="followers")
+     * @param FriendRepository $friendRepository
+     * @return Response
      */
-    public function followers()
+    public function followers(FriendRepository $friendRepository): Response
     {
-
+        $currentUser = $this->getUser();
+        $followers = $friendRepository->getFollowers($currentUser);
+        return $this->render('friend/followers.html.twig', [
+            'followers' => $followers,
+        ]);
     }
 }

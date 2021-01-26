@@ -33,7 +33,7 @@
                 <ul class="mt-5">
                     <li class="mt-3"><a class="text-decoration-none" href="{{ path('user_page', { slug: user.getUser().getSlug }) }}">Личный кабинет</a></li>
                     <li class="mt-3"><a class="text-decoration-none" href="{{ path('friend') }}">Все пользователи</a></li>
-{#                    <li class="mt-3"><a class="text-decoration-none" href="{{ path('personal_area') }}">Мои фото</a></li>#}
+                    <li class="mt-3"><a class="text-decoration-none" href="{{ path('followers') }}">Подпищики</a></li>
                 </ul>
             {% else%}
                 <p>Зарегайся</p>
