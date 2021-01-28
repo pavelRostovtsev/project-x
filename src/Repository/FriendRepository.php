@@ -143,7 +143,7 @@ class FriendRepository extends ServiceEntityRepository
             ->getResult();
 
         if ($query) {
-            if ((object)$query[0]->getStatus() == true) {
+            if ($query[0]->getStatus() === true) {
                 return self::FRIEND;
             } else {
                 return self::FOLLOWER;
@@ -169,6 +169,46 @@ class FriendRepository extends ServiceEntityRepository
 
         $this->entityManager->persist($friendInfo);
         $this->entityManager->flush();
+    }
+
+    /**
+     * @param User $user
+     * @return array
+     */
+    public function getAllFriends(User $user): array
+    {
+        $friends = [];
+        $query = $this
+            ->createQueryBuilder('friend')
+            ->where('friend.user = :user')
+            ->orWhere('friend.user2 = :user2')
+            ->andWhere('friend.status = :status')
+            ->setParameter('user', $user)
+            ->setParameter('user2', $user)
+            ->setParameter('status', true)
+            ->getQuery()
+            ->getResult();
+
+        foreach ($query as $key => $friendInfo) {
+            if($friendInfo->getUser() != $user) {
+                $friends[$key] = [
+                    'userName' => $friendInfo->getUser()->getUserName(),
+                    'surname' => $friendInfo->getUser()->getSurname(),
+                    'slug' => $friendInfo->getUser()->getSlug(),
+                    'avatar' => $friendInfo->getUser()->getAvatar()
+                ];
+            } else {
+                $friends[$key] = [
+                    'userName' => $friendInfo->getUser2()->getUserName(),
+                    'surname' => $friendInfo->getUser2()->getSurname(),
+                    'slug' => $friendInfo->getUser2()->getSlug(),
+                    'avatar' => $friendInfo->getUser2()->getAvatar()
+                ];
+            }
+
+        }
+
+        return $friends;
     }
 
 

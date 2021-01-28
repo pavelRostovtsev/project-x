@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class FriendController extends AbstractController
 {
     /**
-     * @Route("/friend", name="friend")
+     * @Route("/users", name="users")
      * @param UserRepository $userRepository
      * @return Response
      */
@@ -37,6 +37,22 @@ class FriendController extends AbstractController
         $followers = $friendRepository->getFollowers($currentUser);
         return $this->render('friend/followers.html.twig', [
             'followers' => $followers,
+        ]);
+    }
+
+    /**
+     * @Route("/friends", name="friends")
+     * @param FriendRepository $friendRepository
+     * @param User $user
+     * @return Response
+     */
+    public function friends(FriendRepository $friendRepository): Response
+    {
+        $currentUser = $this->getUser();
+        $user = new User();
+        $allFriends = $friendRepository->getAllFriends($currentUser);
+        return $this->render('friend/friends.html.twig', [
+            'allFriends' => $allFriends,
         ]);
     }
 }
