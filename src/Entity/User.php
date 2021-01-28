@@ -16,7 +16,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
  * @ORM\Table(name="`user`")
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
-class User implements UserInterface
+class User extends BaseUnit implements UserInterface
 {
     /**
      * User constructor.
@@ -30,6 +30,7 @@ class User implements UserInterface
         $this->likePost = new ArrayCollection();
         $this->userOne = new ArrayCollection();
         $this->userTwo = new ArrayCollection();
+        $this->ьmyGroups = new ArrayCollection();
     }
 
     /**
@@ -141,6 +142,11 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity=Friend::class, mappedBy="user2")
      */
     private $userTwo;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Group::class, mappedBy="creator", orphanRemoval=true)
+     */
+    private $ьmyGroups;
 
     /**
      * @param string $city
@@ -312,7 +318,7 @@ class User implements UserInterface
     public function computeSlug(SluggerInterface $slugger)
     {
         if (!$this->slug || '-' === $this->slug) {
-            $this->slug = Helpers::translit($this->userName).'-'. Helpers::translit($this->surname).'-'.rand(1,10000);
+            $this->slug = Helpers::translit($this->userName).'-'. Helpers::translit($this->surname).'-'.uniqid();
         }
     }
 
@@ -484,6 +490,36 @@ class User implements UserInterface
             // set the owning side to null (unless already changed)
             if ($userTwo->getUser2() === $this) {
                 $userTwo->setUser2(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Group[]
+     */
+    public function getьmyGroups(): Collection
+    {
+        return $this->ьmyGroups;
+    }
+
+    public function addMyGroup(Group $myGroup): self
+    {
+        if (!$this->ьmyGroups->contains($myGroup)) {
+            $this->ьmyGroups[] = $myGroup;
+            $myGroup->setCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMyGroup(Group $myGroup): self
+    {
+        if ($this->ьmyGroups->removeElement($myGroup)) {
+            // set the owning side to null (unless already changed)
+            if ($myGroup->getCreator() === $this) {
+                $myGroup->setCreator(null);
             }
         }
 

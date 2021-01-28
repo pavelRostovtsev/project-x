@@ -2,14 +2,16 @@
 
 namespace App\Entity;
 
-use App\Repository\GroupRepository;
+use App\Helpers\Helpers;
+use App\Repository\GroupRepository\GroupRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 /**
  * @ORM\Entity(repositoryClass=GroupRepository::class)
  * @ORM\Table(name="`group`")
  */
-class Group
+class Group extends BaseUnit
 {
     /**
      * @ORM\Id
@@ -33,25 +35,36 @@ class Group
      */
     private $img;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $аadmins;
+//    /**
+//     * @ORM\Column(type="string", length=255)
+//     */
+//    private $admins;
+//
+//    /**
+//     * @ORM\Column(type="string", length=255)
+//     */
+//    private $subscribers;
+//
+//    /**
+//     * @ORM\Column(type="string", length=255, nullable=true)
+//     */
+//    private $blackList;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $subscribers;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $blackList;
-
-    /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="boolean")
      */
     private $status;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $slug;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="ьmyGroups")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $creator;
 
     public function getId(): ?int
     {
@@ -94,42 +107,6 @@ class Group
         return $this;
     }
 
-    public function getаadmins(): ?string
-    {
-        return $this->аadmins;
-    }
-
-    public function setаadmins(string $аadmins): self
-    {
-        $this->аadmins = $аadmins;
-
-        return $this;
-    }
-
-    public function getSubscribers(): ?string
-    {
-        return $this->subscribers;
-    }
-
-    public function setSubscribers(string $subscribers): self
-    {
-        $this->subscribers = $subscribers;
-
-        return $this;
-    }
-
-    public function getBlackList(): ?string
-    {
-        return $this->blackList;
-    }
-
-    public function setBlackList(?string $blackList): self
-    {
-        $this->blackList = $blackList;
-
-        return $this;
-    }
-
     public function getStatus(): ?string
     {
         return $this->status;
@@ -141,4 +118,36 @@ class Group
 
         return $this;
     }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function computeSlug(SluggerInterface $slugger)
+    {
+        if (!$this->slug || '-' === $this->slug) {
+            $this->slug = Helpers::translit($this->name).'-'.uniqid();
+        }
+    }
+
+    public function getCreator(): ?User
+    {
+        return $this->creator;
+    }
+
+    public function setCreator(?User $creator): self
+    {
+        $this->creator = $creator;
+
+        return $this;
+    }
+
 }

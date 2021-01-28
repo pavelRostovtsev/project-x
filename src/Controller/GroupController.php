@@ -4,7 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Group;
 use App\Form\GroupType;
-use App\Repository\GroupRepository;
+use App\Repository\GroupRepository\GroupRepository;
+use App\Service\FileManagerServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,7 +17,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class GroupController extends AbstractController
 {
     /**
-     * @Route("/", name="group_index", methods={"GET"})
+     * @Route("/group", name="group_index", methods={"GET"})
+     * @param GroupRepository $groupRepository
+     * @return Response
      */
     public function index(GroupRepository $groupRepository): Response
     {
@@ -26,19 +29,21 @@ class GroupController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="group_new", methods={"GET","POST"})
+     * @Route("/group/new", name="group_new", methods={"GET","POST"})
+     * @param Request $request
+     * @param GroupRepository $groupRepository
+     * @param FileManagerServiceInterface $fileManagerService
+     * @return Response
      */
-    public function new(Request $request): Response
+    public function new(Request $request, GroupRepository $groupRepository, FileManagerServiceInterface $fileManagerService): Response
     {
+        $currentUser = $this->getUser();
         $group = new Group();
         $form = $this->createForm(GroupType::class, $group);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($group);
-            $entityManager->flush();
-
+            $groupRepository->setCreate($group, $form, $fileManagerService, $currentUser);
             return $this->redirectToRoute('group_index');
         }
 
@@ -49,7 +54,9 @@ class GroupController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="group_show", methods={"GET"})
+     * @Route("/group/{slug}", name="group_show", methods={"GET"})
+     * @param Group $group
+     * @return Response
      */
     public function show(Group $group): Response
     {

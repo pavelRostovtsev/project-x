@@ -96,7 +96,7 @@ class UserPageController extends AbstractController
         $friendStatus = $friendRepository->getStatus($currentUser, $user);
         $numberLikes = $likesRepository->numberLikes();
         $friendshipStatus = $friendRepository->getFriendshipStatus($user, $currentUser);
-//        dump($friendshipStatus);die;
+
         return $this->render('user_page/index.html.twig', [
             'page_owner' => $user,
             'status' => $status,
