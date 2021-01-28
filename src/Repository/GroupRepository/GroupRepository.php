@@ -29,7 +29,7 @@ class GroupRepository extends ServiceEntityRepository implements GroupRepository
     public function setCreate(Group $group,
                               Form  $form,
                               FileManagerServiceInterface $fileManagerService,
-                              User $user): GroupRepositoryInterface
+                              User $user): void
     {
         $image = $form->get('img')->getData();
         if($image) {
@@ -39,16 +39,28 @@ class GroupRepository extends ServiceEntityRepository implements GroupRepository
         $group->setCreator($user);
         $this->entityManager->persist($group);
         $this->entityManager->flush();
-        return $this;
-    }
-
-    public function setSave(Group $group): GroupRepositoryInterface
-    {
 
     }
 
-    public function delete(Group $group): GroupRepositoryInterface
+    public function setSave(Group $group, Form $form, FileManagerServiceInterface $fileManagerService): void
     {
+            $image = $form->get('img')->getData();
+            $oldImg = $group->getImg();
+            if($image) {
+                if ($oldImg) {
+                    $fileManagerService->removeImage($oldImg);
+                }
+                $fileName = $fileManagerService->uploadImage($image);
+                $group->setImg($fileName);
+            }
 
+        $this->entityManager->persist($group);
+        $this->entityManager->flush();
+    }
+
+    public function delete(Group $group): void
+    {
+        $this->entityManager->remove($group);
+        $this->entityManager->flush();
     }
 }

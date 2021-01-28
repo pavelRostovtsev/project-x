@@ -66,16 +66,20 @@ class GroupController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="group_edit", methods={"GET","POST"})
+     * @Route("/{slug}/edit", name="group_edit", methods={"GET","POST"})
+     * @param Request $request
+     * @param Group $group
+     * @param GroupRepository $groupRepository
+     * @param FileManagerServiceInterface $fileManagerService
+     * @return Response
      */
-    public function edit(Request $request, Group $group): Response
+    public function edit(Request $request, Group $group, GroupRepository $groupRepository, FileManagerServiceInterface $fileManagerService): Response
     {
         $form = $this->createForm(GroupType::class, $group);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
+            $groupRepository->setSave($group, $form, $fileManagerService);
             return $this->redirectToRoute('group_index');
         }
 
@@ -87,13 +91,15 @@ class GroupController extends AbstractController
 
     /**
      * @Route("/{id}", name="group_delete", methods={"DELETE"})
+     * @param Request $request
+     * @param Group $group
+     * @param GroupRepository $groupRepository
+     * @return Response
      */
-    public function delete(Request $request, Group $group): Response
+    public function delete(Request $request, Group $group, GroupRepository $groupRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$group->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($group);
-            $entityManager->flush();
+            $groupRepository->delete($group);
         }
 
         return $this->redirectToRoute('group_index');

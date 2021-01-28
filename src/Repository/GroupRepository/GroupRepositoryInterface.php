@@ -16,23 +16,27 @@ interface GroupRepositoryInterface
      * @param Form $form
      * @param FileManagerServiceInterface $fileManagerService
      * @param User $user
-     * @return $this
+     * @return void
      */
     public function setCreate(Group $group,
                               Form $form,
                               FileManagerServiceInterface $fileManagerService,
-                              User $user):self;
+                              User $user): void;
 
     /**
      * @param Group $group
-     * @return $this
+     * @param Form $form
+     * @param FileManagerServiceInterface $fileManagerService
+     * @return void
      */
-    public function setSave(Group $group):self;
+    public function setSave(Group $group,
+                            Form $form,
+                            FileManagerServiceInterface $fileManagerService): void;
 
     /**
      * @param Group $group
-     * @return $this
+     * @return void
      */
-    public function delete(Group $group):self;
+    public function delete(Group $group): void;
 
 }

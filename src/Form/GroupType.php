@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Group;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\RadioType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -19,11 +20,15 @@ class GroupType extends AbstractType
         $builder
         ->add('name')
         ->add('description')
-        ->add('img', FileType::class)
-        ->add('status', CheckboxType::class, [
-            'label' => 'закрытая группа',
-            'required' => false,
-            ])
+        ->add('img', FileType::class, [
+            'data_class' => null
+        ])
+        ->add('status', ChoiceType::class, array(
+            'choices'  => array(
+                'закрытая группа' => true,
+                'открытая группа' => false,
+            ),
+        ));
         ;
     }
 
