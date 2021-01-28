@@ -3,73 +3,12 @@
 {% block title %}Group{% endblock %}
 
 {% block body %}
-        <div class="d-flex justify-content-start ml-5">
-            <div class="mr-5">
-                <div>
-                    {% if page_owner.getAvatar != null %}
-                        <img src="{{ asset('uploads/img/'~ page_owner.getAvatar) }}" alt="аватарка" height="200px" width="250px">
-                    {% else %}
-                        <img src="{{ asset('1.jpg') }}" alt="аватарка" height="200px" width="250px">
-                    {% endif %}
-{#                    {% if status %}#}
-{#                        <a href="{{ path('group_edit', {'slug': group.slug}) }}">edit</a>#}
-{#                        {{ include('group/_delete_form.html.twig') }}#}
-{#                    {% else%}#}
-{#                        {% if 'подписан' %}#}
-{#                            <p>Вы подписаны на данную группу</p>#}
-{#                            {{ form_start(formConfirmFriendship) }}#}
-{#                                <input type="submit" value="отписаться" class="btn btn-danger">#}
-{#                            {{ form_end(formConfirmFriendship) }}#}
-{#                        {% else %}#}
-{#                            {{ form_start(formDeleteFriend) }}#}
-{#                            <input class="btn btn-danger" type="submit" value="подписаться">#}
-{#                            {{ form_end(formDeleteFriend) }}#}
-{#                        {% endif %}#}
-{#                    {% endif %}#}
-                </div>
-            </div>
-            <div class="mr-5">
-                <div class="info-user">
-                    <h4>{{ page_owner.getUsername }}</h4>
-                    <h5>Статус</h5>
-                    <p>день рождения:  {{ page_owner.getDOB }}</p>
-                    <p>город:  {{ page_owner.getCity }}</p>
-                    <p></p>
-                </div>
-                {% if status %}
-                    <div class="post-user">
-                        {{ form(form_post) }}
-                    </div>
-                {% endif %}
-                <div class="d-flex justify-content-center">
-                    <div>
-                        <h3 class="text-center">Посты</h3>
-                        {% for  post in posts  %}
-                            <div class="border border-dark mt-3" style="width: 400px">
-                                <p class="text-center">{{ post.getText }}</p>
-                                <div class="d-flex justify-content-center">
-                                    <div>
-                                        <img class="" src="{{ asset('uploads/img/'~ post.getImg) }}" alt="" width="300">
-                                        {% if status %}
-                                            {{ include('post/_delete_form.html.twig') }}
-                                            <a class="ml-2" href="{{ path('post_edit', { id: post.getId }) }}">Изменить</a>
-                                        {% endif %}
-                                        {{ numberLikes }}
-                                        {{ include('post/_like_post_form.html.twig') }}
-                                        {{ include('post/_comment_post.html.twig') }}
-                                        <div>
-                                            {% for comment in post.comments %}
-                                                <p>{{ comment.text }}</p>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </div>
+    {% if group.img != null %}
+        <img src="{{ asset('uploads/img/'~ group.img) }}" alt="аватарка" width="100%">
+    {% else %}
+        <img src="{{ asset('1.jpg') }}" alt="аватарка" height="200px" width="250px">
+    {% endif %}
+    <h1 class="text-center">{{ group.name }}</h1>
+    <h5 class="text-center">{{ group.description }}</h5>
 
-    {% endblock %}
 {% endblock %}

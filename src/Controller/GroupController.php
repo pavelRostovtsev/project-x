@@ -3,12 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\Group;
+use App\Entity\Post;
 use App\Form\GroupType;
+use App\Form\PostType;
+use App\Helpers\Helpers;
 use App\Repository\GroupRepository\GroupRepository;
 use App\Service\FileManagerServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -56,12 +60,26 @@ class GroupController extends AbstractController
     /**
      * @Route("/group/{slug}", name="group_show", methods={"GET"})
      * @param Group $group
+     * @param Request $request
+     * @param FileManagerServiceInterface $fileManagerService
      * @return Response
      */
-    public function show(Group $group): Response
+    public function show(Group $group, Request $request, FileManagerServiceInterface $fileManagerService): Response
     {
+        $currentUser = $this->getUser();
+        $statusAdmin = $group->getCreator()->getSlug() == $currentUser->getSlug();
+
+        $post = new Post();
+        $formPost = $this->createForm(PostType::class, $post);
+        $formPost->handleRequest($request);
+
+        if ($formPost->isSubmitted() && $formPost->isValid()) {
+            
+        }
+
         return $this->render('group/show.html.twig', [
             'group' => $group,
+            'statusAdmin' => $statusAdmin
         ]);
     }
 

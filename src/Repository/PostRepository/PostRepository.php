@@ -2,10 +2,15 @@
 
 namespace App\Repository\PostRepository;
 
+use App\Entity\Group;
 use App\Entity\Post;
 use App\Entity\User;
+use App\Service\FileManagerServiceInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * @method Post|null find($id, $lockMode = null, $lockVersion = null)
@@ -15,15 +20,30 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PostRepository extends ServiceEntityRepository implements PostRepositoryInterface
 {
-    public function __construct(ManagerRegistry $registry)
+    public $entityManager;
+
+    public function __construct(ManagerRegistry $registry, EntityManagerInterface $entityManager)
     {
         parent::__construct($registry, Post::class);
+        $this->entityManager = $entityManager;
     }
 
 
-    public function setCreate(Post $post): PostRepositoryInterface
+    public function setCreate(Post $post, Group $group, bool $statusAdmin, FileManagerServiceInterface $fileManagerService, Form $formPost)
     {
-        // TODO: Implement setCreate() method.
+        if ($statusAdmin) {
+            $image = $formPost->get('img')->getData();
+            if($image) {
+                $fileName = $fileManagerService->uploadImage($image);
+                $post->setImg($fileName);
+            }
+            $post->setAuthor($currentUser);
+            $entityManager->persist($post);
+            $entityManager->flush();
+            return $this->redirectToRoute('group_show', ['slug' => $group->getSlug()]);
+        }else {
+            throw new HttpException(400, 'Ты чет хитришь');
+        }
     }
 
     public function setSave(Post $post): PostRepositoryInterface
