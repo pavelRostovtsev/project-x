@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\Friend;
 use App\Entity\Group;
 use App\Entity\User;
-use App\Repository\GroupsUsersRepository\GroupsUsersRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -213,15 +212,38 @@ class FriendRepository extends ServiceEntityRepository
         return $friends;
     }
 
-//    public function findAllSubscribers(Group $group, User $user, GroupsUsersRepository $groupsUsersRepository)
-//    {
-//
-//    }
-//
-//    public function findAllUnsigned()
-//    {
-//
-//    }
+    /**
+     * @param User $user
+     * @param Group $group
+     */
+    public function findUnsignedFriends(User $user, Group $group)
+    {
+        $friends = [];
+        $query = $this
+            ->createQueryBuilder('friend')
+            ->where('friend.user = :user')
+            ->orWhere('friend.user2 = :user2')
+            ->andWhere('friend.status = :status')
+            ->setParameter('user', $user)
+            ->setParameter('user2', $user)
+            ->setParameter('status', true)
+            ->getQuery()
+            ->getResult();
 
+        foreach ($query as $key => $friendInfo) {
+            if($friendInfo->getUser() != $user) {
+                $friends[$key] = $friendInfo->getUser();
+            } else {
+                $friends[$key] = $friendInfo->getUser2();
+            }
 
+        }
+
+        foreach ($friends as $key => $friend) {
+            foreach ($friend->getMygroup() as $key => $item) {
+                dump($item->getPublic());
+            }
+        }
+
+    }
 }

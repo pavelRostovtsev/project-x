@@ -54,13 +54,13 @@ class Group
     private $creator;
 
     /**
-     * @ORM\OneToMany(targetEntity=GroupsUsers::class, mappedBy="association", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=GroupsUsers::class, mappedBy="public", orphanRemoval=true)
      */
-    private $association;
+    private $public;
 
     public function __construct()
     {
-        $this->association = new ArrayCollection();
+        $this->public = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -150,27 +150,27 @@ class Group
     /**
      * @return Collection|GroupsUsers[]
      */
-    public function getAssociation(): Collection
+    public function getPublic(): Collection
     {
-        return $this->association;
+        return $this->public;
     }
 
-    public function addAssociation(GroupsUsers $association): self
+    public function addPublic(GroupsUsers $public): self
     {
-        if (!$this->association->contains($association)) {
-            $this->association[] = $association;
-            $association->setAssociation($this);
+        if (!$this->public->contains($public)) {
+            $this->public[] = $public;
+            $public->setPublic($this);
         }
 
         return $this;
     }
 
-    public function removeAssociation(GroupsUsers $association): self
+    public function removePublic(GroupsUsers $public): self
     {
-        if ($this->association->removeElement($association)) {
+        if ($this->public->removeElement($public)) {
             // set the owning side to null (unless already changed)
-            if ($association->getAssociation() === $this) {
-                $association->setAssociation(null);
+            if ($public->getPublic() === $this) {
+                $public->setPublic(null);
             }
         }
 

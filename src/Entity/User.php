@@ -154,7 +154,6 @@ class User implements UserInterface
      */
     private $myGroup;
 
-
     /**
      * @param string $city
      * @return $this
@@ -562,5 +561,4 @@ class User implements UserInterface
 
         return $this;
     }
-
 }

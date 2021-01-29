@@ -29,15 +29,10 @@ class GroupsUsers
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Group::class, inversedBy="myGroup")
+     * @ORM\ManyToOne(targetEntity=Group::class, inversedBy="public")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $association;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    private $public;
 
     public function getStatus(): ?bool
     {
@@ -51,6 +46,11 @@ class GroupsUsers
         return $this;
     }
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="myGroup")
+     * @ORM\JoinColumn(nullable=false)
+     */
+
     public function getUser(): ?User
     {
         return $this->user;
@@ -63,15 +63,16 @@ class GroupsUsers
         return $this;
     }
 
-    public function getAssociation(): ?Group
+    public function getPublic(): ?Group
     {
-        return $this->association;
+        return $this->public;
     }
 
-    public function setAssociation(?Group $association): self
+    public function setPublic(?Group $public): self
     {
-        $this->association = $association;
+        $this->public = $public;
 
         return $this;
     }
+
 }

@@ -44,7 +44,7 @@ class GroupsUsersRepository extends ServiceEntityRepository implements GroupsUse
 
         if ($groupVerification == null){
             $groupsUsers->setUser($user);
-            $groupsUsers->setAssociation($group);
+            $groupsUsers->setPublic($group);
             $groupsUsers->setStatus(false);
             $this->entityManager->persist($groupsUsers);
             $this->entityManager->flush();
@@ -73,7 +73,7 @@ class GroupsUsersRepository extends ServiceEntityRepository implements GroupsUse
         $groupVerification = $this
             ->createQueryBuilder('groups_users')
             ->where('groups_users.user = :user')
-            ->andWhere('groups_users.association = :group')
+            ->andWhere('groups_users.public = :group')
             ->setParameter('user', $user)
             ->setParameter('group', $group)
             ->getQuery()
