@@ -32,7 +32,7 @@ class LikesRepository extends ServiceEntityRepository
     /**
      * @param User $user
      * @param Post $post
-     * @return int
+     * @return bool
      */
     public function repeatLike(User $user, Post $post): bool
     {

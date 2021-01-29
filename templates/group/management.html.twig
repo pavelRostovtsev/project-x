@@ -9,9 +9,11 @@
             <H3>Список участников</H3>
         </div>
         <div>
-            <h3>Пригласить друзей</h3>
+            <h3 class="">Пригласить друзей</h3>
             {% for friend in allFriends %}
-                <a href="">Пригласить {{ friend.userName }}  {{ friend.surname }}</a>
+                <div class="mt-5" >
+                    {{ include('group/invite.html.twig') }}
+                </div>
             {% endfor %}
         </div>
         <div class="d-flex justify-content-between ">

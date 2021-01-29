@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Group;
+use App\Entity\GroupsUsers;
 use App\Entity\Post;
 use App\Entity\User;
 use App\Form\GroupType;
@@ -10,8 +11,10 @@ use App\Form\PostType;
 use App\Helpers\Helpers;
 use App\Repository\FriendRepository;
 use App\Repository\GroupRepository\GroupRepository;
+use App\Repository\GroupsUsersRepository\GroupsUsersRepository;
 use App\Repository\UserRepository;
 use App\Service\FileManagerServiceInterface;
+use Doctrine\ORM\OptimisticLockException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -122,6 +125,7 @@ class GroupController extends AbstractController
      * @Route("/group/group-management/{slug}", name="group_management", methods={"GET"})
      * @param Group $group
      * @param Request $request
+     * @param FriendRepository $friendRepository
      * @return Response
      */
     public function groupManagement(Group $group, Request $request, FriendRepository $friendRepository): Response
@@ -131,7 +135,28 @@ class GroupController extends AbstractController
         return $this->render('group/management.html.twig',[
             'group' => $group,
             'allFriends' => $allFriends
-
         ]);
+    }
+
+    /**
+     * @Route("/group/invite/{slug}", name="group_invite", methods={"POST"})
+     * @param Request $request
+     * @param Group $group
+     * @param GroupsUsersRepository $groupsUsersRepository
+     * @param UserRepository $userRepository
+     * @param GroupsUsers $groupsUsers
+     * @return Response
+     */
+    public function invite(Request $request,
+                           Group $group,
+                           GroupsUsersRepository $groupsUsersRepository,
+                           UserRepository $userRepository): Response
+    {
+        $groupsUsers = new GroupsUsers();
+        if ($this->isCsrfTokenValid('invite'.$group->getSlug(), $request->request->get('_token'))) {
+            $groupsUsersRepository->invite($group,$groupsUsers ,$request, $userRepository);
+        }
+
+        return $this->redirectToRoute('group_management', ['slug' => $group->getSlug()]);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Repository\GroupsUsersRepository;
+use App\Repository\GroupsUsersRepository\GroupsUsersRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

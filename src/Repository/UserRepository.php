@@ -54,4 +54,18 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     }
 
+    /**
+     * @param string $slug
+     * @return int|mixed|string
+     */
+    public function findBySlug(string $slug)
+    {
+        return $this
+            ->createQueryBuilder('user')
+            ->where('user.slug = :slug')
+            ->setParameter('slug', $slug)
+            ->getQuery()
+            ->getResult();
+    }
+
 }

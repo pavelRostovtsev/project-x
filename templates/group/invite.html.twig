@@ -1,0 +1,7 @@
+<form method="post" action="{{ path('group_invite', {'slug': group.slug}) }}">
+    <img width="50px" src="{{ asset('uploads/img/'~ friend.avatar) }}" alt="">
+    <p>{{ friend.userName }}{{ friend.surname }}</p>
+    <input type="hidden" name="_token" value="{{ csrf_token('invite' ~ group.slug) }}">
+    <input type="hidden" name="user" value="{{ friend.slug }}">
+    <button class="btn btn-success">Пригласить в группу</button>
+</form>
