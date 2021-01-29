@@ -52,19 +52,8 @@ class UserPageController extends AbstractController
         $formPost->handleRequest($request);
 
         if ($formPost->isSubmitted() && $formPost->isValid()) {
-            if ($status) {
-                $image = $formPost->get('img')->getData();
-                if($image) {
-                    $fileName = $fileManagerService->uploadImage($image);
-                    $post->setImg($fileName);
-                }
-                $post->setAuthor($currentUser);
-                $entityManager->persist($post);
-                $entityManager->flush();
-                return $this->redirectToRoute('user_page', ['slug' => $user->getSlug()]);
-            }else {
-                throw new HttpException(400, 'Ты чет хитришь');
-            }
+            $postRepository->setCreate($post, $fileManagerService, $formPost, $currentUser, $status);
+            return $this->redirectToRoute('user_page', ['slug' => $currentUser->getSlug()]);
         }
 
         $friend = new Friend();

@@ -6,27 +6,40 @@ namespace App\Repository\PostRepository;
 
 use App\Entity\Group;
 use App\Entity\Post;
+use App\Entity\User;
 use App\Service\FileManagerServiceInterface;
+use Symfony\Component\Form\Form;
 
 interface PostRepositoryInterface
 {
     /**
      * @param Post $post
-     * @param Group $group
-     * @param bool $statusAdmin
      * @param FileManagerServiceInterface $fileManagerService
+     * @param Form $formPost
+     * @param User $currentUser
+     * @param bool $status
+     * @return void
      */
-    public function setCreate(Post $post, Group $group, bool $statusAdmin, FileManagerServiceInterface $fileManagerService);
+    public function setCreate(Post $post,
+                              FileManagerServiceInterface $fileManagerService,
+                              Form $formPost,
+                              User $currentUser,
+                              bool $status): void;
 
     /**
      * @param Post $post
-     * @return $this
+     * @param Form $form
+     * @param FileManagerServiceInterface $fileManagerService
+     * @return void
      */
-    public function setSave(Post $post): self;
+    public function setSave(Post $post,
+                            Form $form,
+                            FileManagerServiceInterface $fileManagerService): void;
 
     /**
      * @param Post $post
+     * @param FileManagerServiceInterface $fileManagerService
      * @return mixed
      */
-    public function setDelete(Post $post);
+    public function setDelete(Post $post, FileManagerServiceInterface $fileManagerService);
 }

@@ -10,6 +10,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
@@ -28,34 +29,66 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
         $this->entityManager = $entityManager;
     }
 
-
-    public function setCreate(Post $post, Group $group, bool $statusAdmin, FileManagerServiceInterface $fileManagerService, Form $formPost)
+    /**
+     * @param Post $post
+     * @param FileManagerServiceInterface $fileManagerService
+     * @param Form $formPost
+     * @param User $currentUser
+     * @param bool $status
+     * @return void
+     */
+    public function setCreate(Post $post, FileManagerServiceInterface $fileManagerService, Form $formPost, User $currentUser, bool $status):void
     {
-        if ($statusAdmin) {
+        if ($status) {
             $image = $formPost->get('img')->getData();
             if($image) {
                 $fileName = $fileManagerService->uploadImage($image);
                 $post->setImg($fileName);
             }
             $post->setAuthor($currentUser);
-            $entityManager->persist($post);
-            $entityManager->flush();
-            return $this->redirectToRoute('group_show', ['slug' => $group->getSlug()]);
-        }else {
-            throw new HttpException(400, 'Ты чет хитришь');
+            $this->entityManager->persist($post);
+            $this->entityManager->flush();
         }
     }
 
-    public function setSave(Post $post): PostRepositoryInterface
+    /**
+     * @param Post $post
+     * @param Form $form
+     * @param FileManagerServiceInterface $fileManagerService
+     */
+    public function setSave(Post $post, Form $form, FileManagerServiceInterface $fileManagerService): void
     {
-        // TODO: Implement setSave() method.
+        $image = $form->get('img')->getData();
+        $oldImg = $post->getImg();
+        if($image) {
+            if ($oldImg) {
+                $fileManagerService->removeImage($oldImg);
+            }
+            $fileName = $fileManagerService->uploadImage($image);
+            $post->setImg($fileName);
+        }
+        $this->entityManager->flush();;
     }
 
-    public function setDelete(Post $post)
+    /**
+     * @param Post $post
+     * @param FileManagerServiceInterface $fileManagerService
+     * @return mixed|void
+     */
+    public function setDelete(Post $post, FileManagerServiceInterface $fileManagerService)
     {
-        // TODO: Implement setDelete() method.
+        $img = $post->getImg();
+        if($img) {
+            $fileManagerService->removeImage($img);
+        }
+        $this->entityManager->remove($post);
+        $this->entityManager->flush();
     }
 
+    /**
+     * @param User $user
+     * @return int|mixed|string
+     */
     public function findUserPosts(User $user)
     {
         return $this
@@ -68,6 +101,10 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
             ;
     }
 
+    /**
+     * @param $id
+     * @return int|mixed|string
+     */
     public function findPostComments($id)
     {
         return $this

@@ -4,10 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Group;
 use App\Entity\Post;
+use App\Entity\User;
 use App\Form\GroupType;
 use App\Form\PostType;
 use App\Helpers\Helpers;
+use App\Repository\FriendRepository;
 use App\Repository\GroupRepository\GroupRepository;
+use App\Repository\UserRepository;
 use App\Service\FileManagerServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -69,14 +72,6 @@ class GroupController extends AbstractController
         $currentUser = $this->getUser();
         $statusAdmin = $group->getCreator()->getSlug() == $currentUser->getSlug();
 
-        $post = new Post();
-        $formPost = $this->createForm(PostType::class, $post);
-        $formPost->handleRequest($request);
-
-        if ($formPost->isSubmitted() && $formPost->isValid()) {
-            
-        }
-
         return $this->render('group/show.html.twig', [
             'group' => $group,
             'statusAdmin' => $statusAdmin
@@ -121,5 +116,22 @@ class GroupController extends AbstractController
         }
 
         return $this->redirectToRoute('group_index');
+    }
+
+    /**
+     * @Route("/group/group-management/{slug}", name="group_management", methods={"GET"})
+     * @param Group $group
+     * @param Request $request
+     * @return Response
+     */
+    public function groupManagement(Group $group, Request $request, FriendRepository $friendRepository): Response
+    {
+        $currentUser = $this->getUser();
+        $allFriends = $friendRepository->getAllFriends($currentUser);
+        return $this->render('group/management.html.twig',[
+            'group' => $group,
+            'allFriends' => $allFriends
+
+        ]);
     }
 }

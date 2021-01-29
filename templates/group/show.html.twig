@@ -3,12 +3,22 @@
 {% block title %}Group{% endblock %}
 
 {% block body %}
-    {% if group.img != null %}
-        <img src="{{ asset('uploads/img/'~ group.img) }}" alt="аватарка" width="100%">
-    {% else %}
-        <img src="{{ asset('1.jpg') }}" alt="аватарка" height="200px" width="250px">
-    {% endif %}
-    <h1 class="text-center">{{ group.name }}</h1>
-    <h5 class="text-center">{{ group.description }}</h5>
-
+    <div class="container-fluid">
+        <div class="row d-flex">
+            <div class="col-11">
+                {% if group.img != null %}
+                    <img src="{{ asset('uploads/img/'~ group.img) }}" alt="аватарка" width="100%">
+                {% else %}
+                    <img src="{{ asset('1.jpg') }}" alt="аватарка" height="200px" width="250px">
+                {% endif %}
+                <h1 class="text-center">{{ group.name }}</h1>
+                <h5 class="text-center">{{ group.description }}</h5>
+            </div>
+            <div class="col-1">
+                {% if statusAdmin %}
+                    <a class="btn-outline-info"  href="{{ path('group_management', { slug: group.slug }) }}">Управление группой</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

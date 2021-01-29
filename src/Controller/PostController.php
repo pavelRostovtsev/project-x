@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Likes;
 use App\Entity\Post;
 use App\Entity\PostComment;
-use App\Form\PostCommentType;
 use App\Form\PostType;
 use App\Helpers\Helpers;
 use App\Repository\LikesRepository;
@@ -68,7 +67,7 @@ class PostController extends AbstractController
                 $likesRepository->setDelete($currentLike);
             }
         }
-        return $this->redirectToRoute('news');
+        return $this->redirectToRoute('user_page', ['slug' => $currentUser->getSlug()]);
     }
 
 
@@ -77,26 +76,18 @@ class PostController extends AbstractController
      * @param Request $request
      * @param Post $post
      * @param FileManagerServiceInterface $fileManagerService
+     * @param PostRepository $postRepository
      * @return Response
      */
-    public function edit(Request $request, Post $post,FileManagerServiceInterface $fileManagerService): Response
+    public function edit(Request $request, Post $post,FileManagerServiceInterface $fileManagerService, PostRepository $postRepository): Response
     {
+        $currentUser = $this->getUser();
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $image = $form->get('img')->getData();
-            $oldImg = $post->getImg();
-            if($image) {
-                if ($oldImg) {
-                    $fileManagerService->removeImage($oldImg);
-                }
-                $fileName = $fileManagerService->uploadImage($image);
-                $post->setImg($fileName);
-            }
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('news');
+            $postRepository->setSave($post, $form, $fileManagerService);
+            return $this->redirectToRoute('user_page', ['slug' => $currentUser->getSlug()]);
         }
 
         return $this->render('post/edit.html.twig', [
@@ -110,22 +101,17 @@ class PostController extends AbstractController
      * @param Request $request
      * @param Post $post
      * @param FileManagerServiceInterface $fileManagerService
+     * @param PostRepository $postRepository
      * @return Response
      */
-    public function delete(Request $request, Post $post, FileManagerServiceInterface $fileManagerService): Response
+    public function delete(Request $request, Post $post, FileManagerServiceInterface $fileManagerService, PostRepository $postRepository): Response
     {
+        $currentUser = $this->getUser();
+
         if ($this->isCsrfTokenValid('delete'.$post->getId(), $request->request->get('_token'))) {
-            $img = $post->getImg();
-            if($img) {
-                $fileManagerService->removeImage($img);
-            }
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($post);
-            $entityManager->flush();
+            $postRepository->setDelete($post, $fileManagerService);
         }
 
-        return $this->redirectToRoute('news');
+        return $this->redirectToRoute('user_page', ['slug' => $currentUser->getSlug()]);
     }
-
-
 }
