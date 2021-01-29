@@ -16,7 +16,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
  * @ORM\Table(name="`user`")
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
-class User extends BaseUnit implements UserInterface
+class User implements UserInterface
 {
     /**
      * User constructor.
@@ -30,7 +30,8 @@ class User extends BaseUnit implements UserInterface
         $this->likePost = new ArrayCollection();
         $this->userOne = new ArrayCollection();
         $this->userTwo = new ArrayCollection();
-        $this->ьmyGroups = new ArrayCollection();
+        $this->createdByMeGroup = new ArrayCollection();
+        $this->myGroup = new ArrayCollection();
     }
 
     /**
@@ -146,7 +147,13 @@ class User extends BaseUnit implements UserInterface
     /**
      * @ORM\OneToMany(targetEntity=Group::class, mappedBy="creator", orphanRemoval=true)
      */
-    private $ьmyGroups;
+    private $createdByMeGroup;
+
+    /**
+     * @ORM\OneToMany(targetEntity=GroupsUsers::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $myGroup;
+
 
     /**
      * @param string $city
@@ -499,27 +506,57 @@ class User extends BaseUnit implements UserInterface
     /**
      * @return Collection|Group[]
      */
-    public function getьmyGroups(): Collection
+    public function getCreatedByMeGroup(): Collection
     {
-        return $this->ьmyGroups;
+        return $this->createdByMeGroup;
     }
 
-    public function addMyGroup(Group $myGroup): self
+    public function addCreatedByMeGroup(Group $myGroup): self
     {
-        if (!$this->ьmyGroups->contains($myGroup)) {
-            $this->ьmyGroups[] = $myGroup;
+        if (!$this->createdByMeGroup->contains($myGroup)) {
+            $this->createdByMeGroup[] = $myGroup;
             $myGroup->setCreator($this);
         }
 
         return $this;
     }
 
-    public function removeMyGroup(Group $myGroup): self
+    public function removeCreatedByMeGroup(Group $createdByMeGroup): self
     {
-        if ($this->ьmyGroups->removeElement($myGroup)) {
+        if ($this->createdByMeGroup->removeElement($createdByMeGroup)) {
             // set the owning side to null (unless already changed)
-            if ($myGroup->getCreator() === $this) {
-                $myGroup->setCreator(null);
+            if ($createdByMeGroup->getCreator() === $this) {
+                $createdByMeGroup->setCreator(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|GroupsUsers[]
+     */
+    public function getMyGroup(): Collection
+    {
+        return $this->myGroup;
+    }
+
+    public function addMyGroup(GroupsUsers $myGroup): self
+    {
+        if (!$this->myGroup->contains($myGroup)) {
+            $this->myGroup[] = $myGroup;
+            $myGroup->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMyGroup(GroupsUsers $myGroup): self
+    {
+        if ($this->myGroup->removeElement($myGroup)) {
+            // set the owning side to null (unless already changed)
+            if ($myGroup->getUser() === $this) {
+                $myGroup->setUser(null);
             }
         }
 

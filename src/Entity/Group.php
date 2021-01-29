@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Helpers\Helpers;
 use App\Repository\GroupRepository\GroupRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
@@ -11,7 +13,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
  * @ORM\Entity(repositoryClass=GroupRepository::class)
  * @ORM\Table(name="`group`")
  */
-class Group extends BaseUnit
+class Group
 {
     /**
      * @ORM\Id
@@ -35,21 +37,6 @@ class Group extends BaseUnit
      */
     private $img;
 
-//    /**
-//     * @ORM\Column(type="string", length=255)
-//     */
-//    private $admins;
-//
-//    /**
-//     * @ORM\Column(type="string", length=255)
-//     */
-//    private $subscribers;
-//
-//    /**
-//     * @ORM\Column(type="string", length=255, nullable=true)
-//     */
-//    private $blackList;
-
     /**
      * @ORM\Column(type="boolean")
      */
@@ -61,10 +48,20 @@ class Group extends BaseUnit
     private $slug;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="ьmyGroups")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="createdByMeGroup")
      * @ORM\JoinColumn(nullable=false)
      */
     private $creator;
+
+    /**
+     * @ORM\OneToMany(targetEntity=GroupsUsers::class, mappedBy="association", orphanRemoval=true)
+     */
+    private $гт�union;
+
+    public function __construct()
+    {
+        $this->гт�union = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -146,6 +143,36 @@ class Group extends BaseUnit
     public function setCreator(?User $creator): self
     {
         $this->creator = $creator;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|GroupsUsers[]
+     */
+    public function getгт�union(): Collection
+    {
+        return $this->гт�union;
+    }
+
+    public function addUnion(GroupsUsers $union): self
+    {
+        if (!$this->гт�union->contains($union)) {
+            $this->гт�union[] = $union;
+            $union->setAssociation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUnion(GroupsUsers $union): self
+    {
+        if ($this->гт�union->removeElement($union)) {
+            // set the owning side to null (unless already changed)
+            if ($union->getAssociation() === $this) {
+                $union->setAssociation(null);
+            }
+        }
 
         return $this;
     }
