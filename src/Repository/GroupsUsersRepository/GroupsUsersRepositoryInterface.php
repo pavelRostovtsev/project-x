@@ -6,6 +6,7 @@ namespace App\Repository\GroupsUsersRepository;
 
 use App\Entity\Group;
 use App\Entity\GroupsUsers;
+use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -23,4 +24,6 @@ interface GroupsUsersRepositoryInterface
     public function exclude():void;
 
     public function acceptInvitation():void;
+
+    public function groupVerification(Group $group ,GroupsUsers $groupsUsers, string $slugUser, User $user);
 }

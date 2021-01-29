@@ -126,15 +126,19 @@ class GroupController extends AbstractController
      * @param Group $group
      * @param Request $request
      * @param FriendRepository $friendRepository
+     * @param GroupsUsers $groupsUsers
      * @return Response
      */
     public function groupManagement(Group $group, Request $request, FriendRepository $friendRepository): Response
     {
         $currentUser = $this->getUser();
         $allFriends = $friendRepository->getAllFriends($currentUser);
+
+
         return $this->render('group/management.html.twig',[
             'group' => $group,
-            'allFriends' => $allFriends
+            'allFriends' => $allFriends,
+            'groupsUsers' => $group->getAssociation()
         ]);
     }
 
@@ -144,7 +148,6 @@ class GroupController extends AbstractController
      * @param Group $group
      * @param GroupsUsersRepository $groupsUsersRepository
      * @param UserRepository $userRepository
-     * @param GroupsUsers $groupsUsers
      * @return Response
      */
     public function invite(Request $request,

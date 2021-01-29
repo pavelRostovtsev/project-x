@@ -56,11 +56,11 @@ class Group
     /**
      * @ORM\OneToMany(targetEntity=GroupsUsers::class, mappedBy="association", orphanRemoval=true)
      */
-    private $гт�union;
+    private $association;
 
     public function __construct()
     {
-        $this->гт�union = new ArrayCollection();
+        $this->association = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -150,27 +150,27 @@ class Group
     /**
      * @return Collection|GroupsUsers[]
      */
-    public function getгт�union(): Collection
+    public function getAssociation(): Collection
     {
-        return $this->гт�union;
+        return $this->association;
     }
 
-    public function addUnion(GroupsUsers $union): self
+    public function addAssociation(GroupsUsers $association): self
     {
-        if (!$this->гт�union->contains($union)) {
-            $this->гт�union[] = $union;
-            $union->setAssociation($this);
+        if (!$this->association->contains($association)) {
+            $this->association[] = $association;
+            $association->setAssociation($this);
         }
 
         return $this;
     }
 
-    public function removeUnion(GroupsUsers $union): self
+    public function removeAssociation(GroupsUsers $association): self
     {
-        if ($this->гт�union->removeElement($union)) {
+        if ($this->association->removeElement($association)) {
             // set the owning side to null (unless already changed)
-            if ($union->getAssociation() === $this) {
-                $union->setAssociation(null);
+            if ($association->getAssociation() === $this) {
+                $association->setAssociation(null);
             }
         }
 

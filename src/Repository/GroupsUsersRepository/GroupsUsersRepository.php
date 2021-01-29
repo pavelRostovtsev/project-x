@@ -4,6 +4,7 @@ namespace App\Repository\GroupsUsersRepository;
 
 use App\Entity\Group;
 use App\Entity\GroupsUsers;
+use App\Entity\User;
 use App\Repository\GroupRepository\GroupRepositoryInterface;
 use App\Repository\UserRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -20,6 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class GroupsUsersRepository extends ServiceEntityRepository implements GroupsUsersRepositoryInterface
 {
+
     public $entityManager;
 
     public function __construct(ManagerRegistry $registry, EntityManagerInterface $entityManager)
@@ -38,14 +40,15 @@ class GroupsUsersRepository extends ServiceEntityRepository implements GroupsUse
     {
         $slugUser = $request->request->get('user');
         $user = $userRepository->findBySlug($slugUser)[0];
+        $groupVerification = $this->groupVerification($group, $groupsUsers, $slugUser, $user);
 
-        $groupsUsers->setUser($user);
-        $groupsUsers->setAssociation($group);
-        $groupsUsers->setStatus(false);
-        $this->entityManager->persist($groupsUsers);
-        $this->entityManager->flush();
-
-
+        if ($groupVerification == null){
+            $groupsUsers->setUser($user);
+            $groupsUsers->setAssociation($group);
+            $groupsUsers->setStatus(false);
+            $this->entityManager->persist($groupsUsers);
+            $this->entityManager->flush();
+        }
     }
 
     public function exclude(): void
@@ -56,5 +59,30 @@ class GroupsUsersRepository extends ServiceEntityRepository implements GroupsUse
     public function acceptInvitation(): void
     {
         // TODO: Implement acceptInvitation() method.
+    }
+
+    /**
+     * @param Group $group
+     * @param GroupsUsers $groupsUsers
+     * @param string $slugUser
+     * @param User $user
+     * @return self
+     */
+    public function groupVerification(Group $group ,GroupsUsers $groupsUsers, string $slugUser, User $user)
+    {
+        $groupVerification = $this
+            ->createQueryBuilder('groups_users')
+            ->where('groups_users.user = :user')
+            ->andWhere('groups_users.association = :group')
+            ->setParameter('user', $user)
+            ->setParameter('group', $group)
+            ->getQuery()
+            ->getResult();
+
+        if ($groupVerification) {
+            return (object)$groupVerification[0];
+        }
+        return $groupVerification;
+
     }
 }

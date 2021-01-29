@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Friend;
+use App\Entity\Group;
 use App\Entity\User;
+use App\Repository\GroupsUsersRepository\GroupsUsersRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -211,6 +213,15 @@ class FriendRepository extends ServiceEntityRepository
         return $friends;
     }
 
+//    public function findAllSubscribers(Group $group, User $user, GroupsUsersRepository $groupsUsersRepository)
+//    {
+//
+//    }
+//
+//    public function findAllUnsigned()
+//    {
+//
+//    }
 
 
 }
