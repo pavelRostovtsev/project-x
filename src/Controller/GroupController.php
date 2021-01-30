@@ -161,4 +161,24 @@ class GroupController extends AbstractController
 
         return $this->redirectToRoute('group_management', ['slug' => $group->getSlug()]);
     }
+
+    /**
+     * @Route("/group/exclude/{slug}", name="group_exclude", methods={"POST"})
+     * @param Group $group
+     * @param Request $request
+     * @param GroupsUsersRepository $groupRepository
+     * @param UserRepository $userRepository
+     * @return Response
+     */
+    public function exclude(Group $group,
+                            Request $request,
+                            GroupsUsersRepository $groupRepository,
+                            UserRepository $userRepository): Response
+    {
+        $groupsUsers = new GroupsUsers();
+        if ($this->isCsrfTokenValid('exclude'.$group->getSlug(), $request->request->get('_token'))) {
+            $groupRepository->exclude($group, $groupsUsers, $request, $userRepository);
+            return $this->redirectToRoute('group_management', ['slug' => $group->getSlug()]);
+        }
+    }
 }

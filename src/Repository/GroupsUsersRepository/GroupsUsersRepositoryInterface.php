@@ -21,7 +21,7 @@ interface GroupsUsersRepositoryInterface
      */
     public function invite(Group $group ,GroupsUsers $groupsUsers, Request $request,UserRepository $userRepository):void;
 
-    public function exclude():void;
+    public function exclude(Group $group ,GroupsUsers $groupsUsers, Request $request, UserRepository $userRepository):void;
 
     public function acceptInvitation():void;
 

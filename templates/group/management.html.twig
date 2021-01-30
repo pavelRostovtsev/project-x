@@ -9,8 +9,7 @@
             <H3>Список участников</H3>
 
             {% for subscriber  in subscribers %}
-                <img width="50px" src="{{ asset('uploads/img/'~ subscriber.user.avatar) }}" alt="">
-                <p>{{ subscriber.user.userName }}{{ subscriber.user.surname }}</p>
+                {{ include('group/exclude.html.twig') }}
             {% endfor %}
 
         </div>

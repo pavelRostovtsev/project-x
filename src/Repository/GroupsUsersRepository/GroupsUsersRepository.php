@@ -51,8 +51,22 @@ class GroupsUsersRepository extends ServiceEntityRepository implements GroupsUse
         }
     }
 
-    public function exclude(): void
+    public function exclude(Group $group ,GroupsUsers $groupsUsers, Request $request, UserRepository $userRepository): void
     {
+        $slugUser = $request->request->get('user');
+        $user = $userRepository->findBySlug($slugUser)[0];
+
+        $query = $this
+            ->createQueryBuilder('groups_users')
+            ->where('groups_users.user = :user')
+            ->andWhere('groups_users.public = :group')
+            ->setParameter('user', $user)
+            ->setParameter('group', $group)
+            ->getQuery()
+            ->getResult();
+
+        $this->entityManager->remove((object)$query[0]);
+        $this->entityManager->flush();
 
     }
 
