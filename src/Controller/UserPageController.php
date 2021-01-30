@@ -61,18 +61,21 @@ class UserPageController extends AbstractController
         $formAddFriend->handleRequest($request);
         if ($formAddFriend->isSubmitted() && $formAddFriend->isValid()) {
             $friendRepository->addFriend($currentUser, $user, $friend);
+            return $this->redirectToRoute('user_page', ['slug' => $currentUser->getSlug()]);
         }
 
         $formDeleteFriend = $this->createForm(FriendDeleteType::class, $friend);
         $formDeleteFriend->handleRequest($request);
         if ($formDeleteFriend->isSubmitted() && $formDeleteFriend->isValid()) {
             $friendRepository->deleteFriend($currentUser, $user);
+            return $this->redirectToRoute('user_page', ['slug' => $currentUser->getSlug()]);
         }
 
         $formUnsubscribe = $this->createForm(FriendUnsubscribeType::class, $friend);
         $formUnsubscribe->handleRequest($request);
         if ($formUnsubscribe->isSubmitted() && $formUnsubscribe->isValid()) {
             $friendRepository->unsubscribe($currentUser, $user);
+            return $this->redirectToRoute('user_page', ['slug' => $currentUser->getSlug()]);
         }
 
         $formConfirmFriendship = $this->createForm(ConfirmFriendshipType::class, $friend);
@@ -80,11 +83,13 @@ class UserPageController extends AbstractController
         if ($formConfirmFriendship->isSubmitted() && $formConfirmFriendship->isValid()) {
 
             $friendRepository->acceptFriendship($user, $currentUser);
+            return $this->redirectToRoute('user_page', ['slug' => $currentUser->getSlug()]);
         }
 
         $friendStatus = $friendRepository->getStatus($currentUser, $user);
         $numberLikes = $likesRepository->numberLikes();
         $friendshipStatus = $friendRepository->getFriendshipStatus($user, $currentUser);
+
 
         return $this->render('user_page/index.html.twig', [
             'page_owner' => $user,

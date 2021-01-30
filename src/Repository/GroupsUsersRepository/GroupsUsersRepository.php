@@ -53,7 +53,7 @@ class GroupsUsersRepository extends ServiceEntityRepository implements GroupsUse
 
     public function exclude(): void
     {
-        // TODO: Implement exclude() method.
+
     }
 
     public function acceptInvitation(): void
